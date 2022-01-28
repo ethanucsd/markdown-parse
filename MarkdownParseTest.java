@@ -16,7 +16,8 @@ public class MarkdownParseTest {
 
     @Test
     public void testNoEntries() throws IOException, URISyntaxException {
-        Path fileName = Path.of("noEntries.md");
+        URL url = this.getClass().getResource("noEntries.md");
+        Path fileName = Paths.get(url.toURI());
 	    String contents = Files.readString(fileName);
         ArrayList<String> links = MarkdownParse.getLinks(contents);
         assertEquals(0, links.size());
