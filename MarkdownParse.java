@@ -5,30 +5,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class MarkdownParse {
-    public static int getNthSlashN(String markdown, int lineCount) {
-        if (lineCount > 0) {
-            int place = 0;
-            int i = 0;
-            while (place < markdown.length()) {
-                if (markdown.charAt(place) == '\n') {
-                    i++;
-                    if (i == lineCount) return place;
-                }
-                place++;
-            }
-
-        } else return 0;
-        return -1;
-    }
-
+    public static final String NEW_LINE = System.getProperty("line.separator");
     public static String getCurrentLine(String markdown, int lineCount) {
-        int begin = getNthSlashN(markdown, lineCount);
-        int end = getNthSlashN(markdown, lineCount + 1);
-        
-        if (begin == -1) return null;
-        if (end == -1) end = markdown.length();
-        
-        return markdown.substring(begin, end - 1);
+        String[] strings = markdown.split(NEW_LINE);
+        if (strings.length <= lineCount) return null;
+        return strings[lineCount];
     }
 
     public static ArrayList<String> getLinks(String markdown) {
@@ -39,9 +20,9 @@ public class MarkdownParse {
         while(getCurrentLine(markdown, currentLine) != null) {
             String line = getCurrentLine(markdown, currentLine);
             int nextOpenBracket = line.indexOf("[", 0);
-            int nextCloseBracket = line.lastIndexOf("]", nextOpenBracket);
-            int openParen = line.lastIndexOf("(", nextCloseBracket);
-            int closeParen = line.lastIndexOf(")", openParen);
+            int nextCloseBracket = line.lastIndexOf("]", markdown.length());
+            int openParen = line.indexOf("(", nextCloseBracket);
+            int closeParen = line.lastIndexOf(")", markdown.length());
             if (!(nextOpenBracket == -1 || nextCloseBracket == -1 || openParen == -1 || closeParen == -1)) 
                 toReturn.add(line.substring(openParen + 1, closeParen));
                 
